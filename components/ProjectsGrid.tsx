@@ -28,7 +28,11 @@ const container = {
 
 const item = {
   hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } }
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" as const }
+  }
 };
 
 export default function ProjectsGrid({ projects }: { projects: Project[] }) {
@@ -55,12 +59,16 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
             className="block"
           >
             {project.image && (
-              <div className="relative w-full aspect-video overflow-hidden">
+              <div className="relative w-full aspect-video overflow-hidden bg-[#141414]">
                 <Image
-                  src={urlFor(project.image).width(900).height(506).url()}
+                  src={urlFor(project.image)
+                    .width(900)
+                    .height(506)
+                    .fit("max")
+                    .url()}
                   alt={project.title}
                   fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="object-contain transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
             )}

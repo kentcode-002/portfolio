@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { MoveUpRight, Github } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { MoveUpRight, Github, Expand } from "lucide-react";
 import { urlFor } from "@/sanity/lib/image";
 import type { SanityImageSource } from "@sanity/image-url";
+import Lightbox from "@/components/LightBox";
 
 interface Project {
   title: string;
@@ -28,23 +30,43 @@ const fadeUp = {
 };
 
 export default function ProjectCaseStudy({ project }: { project: Project }) {
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
+  const fullImages: string[] = [
+    ...(project.image
+      ? [urlFor(project.image).width(1920).fit("max").url()]
+      : []),
+    ...(project.gallery ?? []).map((img) =>
+      urlFor(img).width(1920).fit("max").url()
+    )
+  ];
+
   return (
     <div>
       {project.image && (
-        <motion.div
+        <motion.button
+          type="button"
+          onClick={() => setLightboxIndex(0)}
           initial={{ opacity: 0, scale: 0.97 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" as const }}
-          className="relative w-full rounded-2xl overflow-hidden aspect-video"
+          className="group relative w-full rounded-2xl overflow-hidden aspect-video bg-[#141414] cursor-zoom-in block"
         >
           <Image
-            src={urlFor(project.image).width(1600).height(900).url()}
+            src={urlFor(project.image).width(1600).height(900).fit("max").url()}
             fill
             alt={project.title}
             priority
-            className="object-cover"
+            className="object-contain"
           />
-        </motion.div>
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+            <Expand
+              className="text-white opacity-0 group-hover:opacity-100 transition-opacity"
+              height={28}
+              width={28}
+            />
+          </div>
+        </motion.button>
       )}
 
       <motion.div
@@ -131,26 +153,49 @@ export default function ProjectCaseStudy({ project }: { project: Project }) {
             Gallery
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {project.gallery.map((img, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.45, delay: i * 0.05 }}
-                className="relative w-full aspect-video rounded-xl overflow-hidden border border-[#3a3a3a]"
-              >
-                <Image
-                  src={urlFor(img).width(1200).height(675).url()}
-                  fill
-                  alt={`${project.title} screenshot ${i + 1}`}
-                  className="object-cover hover:scale-105 transition-transform duration-500"
-                />
-              </motion.div>
-            ))}
+            {project.gallery.map((img, i) => {
+              const lightboxTarget = project.image ? i + 1 : i;
+              return (
+                <motion.button
+                  type="button"
+                  key={i}
+                  onClick={() => setLightboxIndex(lightboxTarget)}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ duration: 0.45, delay: i * 0.05 }}
+                  className="group relative w-full aspect-video rounded-xl overflow-hidden border border-[#3a3a3a] bg-[#141414] cursor-zoom-in block"
+                >
+                  <Image
+                    src={urlFor(img).width(1600).height(900).fit("max").url()}
+                    fill
+                    alt={`${project.title} screenshot ${i + 1}`}
+                    className="object-contain group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                    <Expand
+                      className="text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                      height={24}
+                      width={24}
+                    />
+                  </div>
+                </motion.button>
+              );
+            })}
           </div>
         </motion.div>
       )}
+
+      <AnimatePresence>
+        {lightboxIndex !== null && (
+          <Lightbox
+            images={fullImages}
+            index={lightboxIndex}
+            onClose={() => setLightboxIndex(null)}
+            onNavigate={(next) => setLightboxIndex(next)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
