@@ -50,7 +50,7 @@ export default function ProjectCaseStudy({ project }: { project: Project }) {
           initial={{ opacity: 0, scale: 0.97 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" as const }}
-          className="group relative w-full rounded-2xl overflow-hidden aspect-video bg-[#141414] cursor-zoom-in block"
+          className="group relative w-full rounded-2xl overflow-hidden aspect-video bg-surface-2 cursor-zoom-in block"
         >
           <Image
             src={urlFor(project.image).width(1600).height(900).fit("max").url()}
@@ -59,9 +59,9 @@ export default function ProjectCaseStudy({ project }: { project: Project }) {
             priority
             className="object-contain"
           />
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+          <div className="absolute inset-0 bg-bg/0 group-hover:bg-bg/30 transition-colors flex items-center justify-center">
             <Expand
-              className="text-white opacity-0 group-hover:opacity-100 transition-opacity"
+              className="text-fg opacity-0 group-hover:opacity-100 transition-opacity"
               height={28}
               width={28}
             />
@@ -74,7 +74,7 @@ export default function ProjectCaseStudy({ project }: { project: Project }) {
         initial="hidden"
         animate="show"
         custom={0.1}
-        className="text-white"
+        className="text-fg"
       >
         <div className="flex flex-wrap items-start justify-between gap-3 mt-6">
           <div>
@@ -82,7 +82,7 @@ export default function ProjectCaseStudy({ project }: { project: Project }) {
               {project.title}
             </p>
             {project.subtitle && (
-              <p className="font-medium mt-1 text-sm sm:text-md text-[#b5b5b5]">
+              <p className="font-medium mt-1 text-sm sm:text-md text-muted">
                 {project.subtitle}
               </p>
             )}
@@ -94,7 +94,7 @@ export default function ProjectCaseStudy({ project }: { project: Project }) {
                 href={project.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs sm:text-sm font-semibold bg-white text-black px-3 py-2 rounded hover:bg-[#e0e0e0] transition-colors inline-flex items-center gap-1"
+                className="text-xs sm:text-sm font-semibold bg-fg text-bg px-3 py-2 rounded hover:opacity-90 transition-colors inline-flex items-center gap-1"
               >
                 Visit live site <MoveUpRight height={13} width={13} />
               </a>
@@ -104,7 +104,7 @@ export default function ProjectCaseStudy({ project }: { project: Project }) {
                 href={project.githubLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs sm:text-sm font-semibold border border-[#3a3a3a] px-3 py-2 rounded hover:border-[gray] transition-colors inline-flex items-center gap-1"
+                className="text-xs sm:text-sm font-semibold border border-line px-3 py-2 rounded hover:border-accent transition-colors inline-flex items-center gap-1"
               >
                 <Github height={13} width={13} /> View code
               </a>
@@ -113,7 +113,7 @@ export default function ProjectCaseStudy({ project }: { project: Project }) {
         </div>
 
         {project.role && (
-          <p className="mt-4 inline-block text-xs font-semibold border border-[#3a3a3a] rounded-sm px-2 py-1 text-[#cfcfcf]">
+          <p className="mt-4 inline-block text-xs font-semibold border border-line rounded-sm px-2 py-1 text-fg-soft">
             Role: {project.role}
           </p>
         )}
@@ -131,7 +131,7 @@ export default function ProjectCaseStudy({ project }: { project: Project }) {
               {project.techStack.map((tech, i) => (
                 <span
                   key={i}
-                  className="border border-[#3a3a3a] rounded-sm text-xs px-2 py-1 text-[#cfcfcf]"
+                  className="border border-line rounded-sm text-xs px-2 py-1 text-fg-soft"
                 >
                   {tech}
                 </span>
@@ -149,7 +149,7 @@ export default function ProjectCaseStudy({ project }: { project: Project }) {
           custom={0.2}
           className="mt-10"
         >
-          <p className="text-lg sm:text-xl font-bold text-white mb-4">
+          <p className="text-lg sm:text-xl font-bold text-fg mb-4">
             Gallery
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -164,7 +164,7 @@ export default function ProjectCaseStudy({ project }: { project: Project }) {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.45, delay: i * 0.05 }}
-                  className="group relative w-full aspect-video rounded-xl overflow-hidden border border-[#3a3a3a] bg-[#141414] cursor-zoom-in block"
+                  className="group relative w-full aspect-video rounded-xl overflow-hidden border border-line bg-surface-2 cursor-zoom-in block"
                 >
                   <Image
                     src={urlFor(img).width(1600).height(900).fit("max").url()}
@@ -172,9 +172,9 @@ export default function ProjectCaseStudy({ project }: { project: Project }) {
                     alt={`${project.title} screenshot ${i + 1}`}
                     className="object-contain group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                  <div className="absolute inset-0 bg-bg/0 group-hover:bg-bg/30 transition-colors flex items-center justify-center">
                     <Expand
-                      className="text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="text-fg opacity-0 group-hover:opacity-100 transition-opacity"
                       height={24}
                       width={24}
                     />

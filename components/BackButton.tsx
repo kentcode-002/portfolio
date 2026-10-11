@@ -12,7 +12,7 @@ const BackButton = () => {
       whileHover={{ x: -4 }}
       transition={{ duration: 0.2 }}
       onClick={() => router.back()}
-      className="flex gap-4 text-white font-light mb-4 items-center cursor-pointer"
+      className="flex gap-4 text-fg font-light mb-4 items-center cursor-pointer"
     >
       <MoveLeft />
       <span>Back</span>

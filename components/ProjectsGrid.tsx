@@ -3,132 +3,164 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { MoveUpRight, Github } from "lucide-react";
+import { Github, MoveUpRight } from "lucide-react";
+import type { ReactNode } from "react";
 import { urlFor } from "@/sanity/lib/image";
 import type { SanityImageSource } from "@sanity/image-url";
 
-interface Project {
+export interface Project {
   _id: string;
   title: string;
   subtitle?: string;
   link?: string;
   githubLink?: string;
-  image?: SanityImageSource;
+  /** Image object from Sanity. */
+  image?: SanityImageSource | null;
+  /** Plain image path, used only by the static fallback list. */
+  imageUrl?: string;
   techStack?: string[];
   slug?: string;
 }
 
 const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.12 }
-  }
+  hidden: {},
+  show: { transition: { staggerChildren: 0.1 } }
 };
 
 const item = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 16 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: "easeOut" as const }
+    transition: { duration: 0.45, ease: "easeOut" as const }
   }
 };
 
+function coverSrc(project: Project): string {
+  if (project.imageUrl) return project.imageUrl;
+  if (project.image) {
+    return urlFor(project.image).width(900).height(560).fit("max").url();
+  }
+  return "";
+}
+
+// Opens the case-study page when the project has one, otherwise the live site.
+function ProjectLink({
+  project,
+  className,
+  children
+}: {
+  project: Project;
+  className?: string;
+  children: ReactNode;
+}) {
+  if (project.slug) {
+    return (
+      <Link href={`/projects/${project.slug}`} className={className}>
+        {children}
+      </Link>
+    );
+  }
+  if (project.link) {
+    return (
+      <a
+        href={project.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={className}
+      >
+        {children}
+      </a>
+    );
+  }
+  return <div className={className}>{children}</div>;
+}
+
+const textLink =
+  "inline-flex items-center gap-1 underline decoration-line underline-offset-4 transition-colors hover:decoration-accent";
+
 export default function ProjectsGrid({ projects }: { projects: Project[] }) {
   if (!projects || projects.length === 0) {
-    return <p className="text-white mt-6">No projects found</p>;
+    return <p className="text-muted">No projects to show yet.</p>;
   }
 
   return (
     <motion.div
       variants={container}
       initial="hidden"
-      animate="show"
-      className="w-full grid grid-cols-1 gap-5 lg:grid-cols-2 mt-8"
+      whileInView="show"
+      viewport={{ once: true, margin: "-60px" }}
+      className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2"
     >
-      {projects.map((project) => (
-        <motion.div
-          key={project._id}
-          variants={item}
-          whileHover={{ y: -4 }}
-          className="group relative rounded-xl bg-[#1e1e1e] border border-[#2e2e2e] text-white overflow-hidden transition-colors hover:border-[gray]"
-        >
-          <Link
-            href={project.slug ? `/projects/${project.slug}` : "#"}
-            className="block"
-          >
-            {project.image && (
-              <div className="relative w-full aspect-video overflow-hidden bg-[#141414]">
-                <Image
-                  src={urlFor(project.image)
-                    .width(900)
-                    .height(506)
-                    .fit("max")
-                    .url()}
-                  alt={project.title}
-                  fill
-                  className="object-contain transition-transform duration-500 group-hover:scale-105"
-                />
+      {projects.map((project) => {
+        const src = coverSrc(project);
+        return (
+          <motion.article key={project._id} variants={item} className="group">
+            <ProjectLink project={project} className="block">
+              <div className="relative aspect-[16/10] overflow-hidden rounded-lg border border-line bg-surface-2 transition-colors group-hover:border-accent">
+                {src ? (
+                  <Image
+                    src={src}
+                    alt={`${project.title} screenshot`}
+                    fill
+                    sizes="(min-width: 640px) 440px, 100vw"
+                    className="object-contain transition-transform duration-500 group-hover:scale-[1.03]"
+                  />
+                ) : (
+                  <div
+                    aria-hidden="true"
+                    className="flex h-full items-center justify-center text-5xl font-black text-line"
+                  >
+                    {project.title.slice(0, 2)}
+                  </div>
+                )}
+              </div>
+              <h3 className="mt-4 text-lg font-bold leading-snug">
+                {project.title}
+              </h3>
+            </ProjectLink>
+
+            {project.subtitle && (
+              <p className="mt-1.5 line-clamp-2 leading-relaxed text-muted">
+                {project.subtitle}
+              </p>
+            )}
+
+            {project.techStack && project.techStack.length > 0 && (
+              <p className="mt-3 text-sm text-fg-soft">
+                {project.techStack.slice(0, 5).join(", ")}
+              </p>
+            )}
+
+            {(project.link || project.githubLink) && (
+              <div className="mt-3 flex items-center gap-5 text-sm">
+                {project.link && (
+                  <a
+                    href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={textLink}
+                  >
+                    Live site
+                    <MoveUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  </a>
+                )}
+                {project.githubLink && (
+                  <a
+                    href={project.githubLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={textLink}
+                  >
+                    <Github className="h-3.5 w-3.5" aria-hidden="true" />
+                    Code
+                  </a>
+                )}
               </div>
             )}
-
-            <div className="p-6">
-              <div className="flex items-start justify-between gap-3">
-                <p className="font-bold text-xl">{project.title}</p>
-                <MoveUpRight
-                  height={16}
-                  width={16}
-                  className="shrink-0 mt-1 opacity-60 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                />
-              </div>
-              {project.subtitle && (
-                <p className="font-light text-sm mt-2 text-[#b5b5b5]">
-                  {project.subtitle}
-                </p>
-              )}
-
-              {project.techStack && project.techStack.length > 0 && (
-                <div className="flex flex-row flex-wrap gap-2 mt-4">
-                  {project.techStack.map((tech, i) => (
-                    <span
-                      key={i}
-                      className="border border-[#3a3a3a] rounded-sm text-xs px-2 py-1 text-[#cfcfcf]"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          </Link>
-
-          <div className="flex items-center gap-3 px-6 pb-6">
-            {project.link && (
-              <a
-                href={project.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="text-xs font-semibold bg-white text-black px-3 py-1.5 rounded hover:bg-[#e0e0e0] transition-colors inline-flex items-center gap-1"
-              >
-                Visit live site <MoveUpRight height={12} width={12} />
-              </a>
-            )}
-            {project.githubLink && (
-              <a
-                href={project.githubLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="text-xs font-semibold border border-[#3a3a3a] px-3 py-1.5 rounded hover:border-[gray] transition-colors inline-flex items-center gap-1"
-              >
-                <Github height={12} width={12} /> Code
-              </a>
-            )}
-          </div>
-        </motion.div>
-      ))}
+          </motion.article>
+        );
+      })}
     </motion.div>
   );
 }

@@ -30,7 +30,7 @@ export default function BlogList({ blogs }: { blogs: Blog[] }) {
         <motion.div key={blog.id} variants={item}>
           <Link
             href={`/blog/${blog.id}`}
-            className="block text-base lg:text-xl text-white font-bold border-b border-gray-100/30 pb-4 hover:text-[#cfcfcf] transition-colors"
+            className="block text-base lg:text-xl text-fg font-bold border-b border-line pb-4 hover:text-fg-soft transition-colors"
           >
             <p>{blog.title}</p>
           </Link>

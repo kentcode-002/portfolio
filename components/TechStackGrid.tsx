@@ -50,7 +50,7 @@ export default function TechStackGrid({
           key={category.title}
           variants={card}
           whileHover={{ y: -4 }}
-          className="rounded-xl border border-[#2e2e2e] bg-[#1e1e1e] text-white p-6 transition-colors hover:border-[gray]"
+          className="rounded-xl border border-line bg-surface text-fg p-6 transition-colors hover:border-accent"
         >
           <p className="text-lg font-bold">{category.title}</p>
 
@@ -62,7 +62,7 @@ export default function TechStackGrid({
               <motion.span
                 key={skill}
                 variants={pill}
-                className="border border-[#3a3a3a] rounded-sm text-xs px-2.5 py-1.5 text-[#cfcfcf]"
+                className="border border-line rounded-sm text-xs px-2.5 py-1.5 text-fg-soft"
               >
                 {skill}
               </motion.span>

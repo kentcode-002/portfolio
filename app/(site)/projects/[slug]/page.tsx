@@ -1,4 +1,4 @@
-// app/projects/[slug]/page.tsx
+// app/(site)/projects/[slug]/page.tsx
 
 import BackButton from "@/components/BackButton";
 import { client } from "@/sanity/lib/client";
@@ -26,19 +26,19 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
 
   if (!project) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-[#1e1e1e] text-white p-10">
-        <p>Project not found.</p>
+      <div className="mx-auto max-w-5xl px-5 py-10 sm:py-14">
         <BackButton />
+        <p className="text-muted">
+          This project doesn&apos;t exist or has been removed.
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen py-10 px-4 bg-[#1e1e1e]">
-      <div className="max-w-5xl mx-auto md:px-10">
-        <BackButton />
-        <ProjectCaseStudy project={project} />
-      </div>
+    <div className="mx-auto max-w-5xl px-5 py-10 sm:py-14">
+      <BackButton />
+      <ProjectCaseStudy project={project} />
     </div>
   );
 };

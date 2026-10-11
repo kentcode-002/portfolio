@@ -15,8 +15,8 @@ export default function BlogPost({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" as const }}
     >
-      <p className="text-white font-bold text-lg lg:text-2xl">{title}</p>
-      <p className="text-white text-xl font-light mt-4">{body}</p>
+      <p className="text-fg font-bold text-lg lg:text-2xl">{title}</p>
+      <p className="text-fg text-xl font-light mt-4">{body}</p>
     </motion.div>
   );
 }
